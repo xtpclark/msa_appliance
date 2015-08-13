@@ -1,0 +1,24 @@
+#!/bin/bash
+
+PGUSER=admin
+PGPORT=5433
+PGHOST=localhost
+DBNAME=msa_live
+PGCLUSTER=msalive-live
+XTVER=4.8.0
+XTTYPE=live
+# pg_ctlcluster 9.3 msalive-480-beta-live restart --force
+
+PGCMD="psql -At -U ${PGUSER} -p ${PGPORT} -h ${PGHOST}"
+
+cmd="sudo service xtuple stop ${PGCLUSTER} ${XTVER} ${XTTYPE}"
+echo "$cmd"
+ACT=`$cmd`
+
+STOPCONN=`${PGCMD} postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '$DBNAME' AND pid <> pg_backend_pid();"`
+
+DROPDB=`${PGCMD} postgres -c "DROP DATABASE ${DBNAME};"`
+echo "Dropped ${DBNAME}"
+
+CREATEDB=`${PGCMD} postgres -c "CREATE DATABASE ${DBNAME} OWNER ${PGUSER};"`
+echo "Created ${DBNAME}"

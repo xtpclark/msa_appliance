@@ -1,0 +1,15 @@
+#!/bin/sh
+NVER='0.10.33'
+WDIR='/usr/local/msalive/.xtuple/dist/4.8.0'
+XTDIR=${WDIR}/xtuple
+PDIR=${WDIR}/private-extensions/source
+PUDIR=${WDIR}/xtuple-extensions/source
+CFGDIR='/etc/xtuple/msalive-480-live'
+
+
+n ${NVER} && ${XTDIR}/scripts/build_app.js -c ${CFGDIR}/config.js -e ${PDIR}/quality
+sudo service xtuple reload
+exit 0;
+
+
+
